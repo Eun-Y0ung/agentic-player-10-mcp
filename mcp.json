@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agentic-player-10": {
+      "command": "node",
+      "args": ["dist/server.js"],
+      "env": {
+        "LOG_LEVEL": "info"
+      }
+    }
+  }
+}
