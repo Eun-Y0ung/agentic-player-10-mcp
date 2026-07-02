@@ -11,9 +11,9 @@
 ## Project Context
 
 - This repository is for an Agentic Player 10 MCP server.
-- The current product direction is `TeamTok MCP`: a university team project assistant for KakaoTalk-style group chats.
-- Read `docs/prd-team-project-mcp.md` before implementing product features.
-- The core value is not generic chat summarization. It is converting messy team project chat into roles, deadlines, decisions, pending items, checklists, and KakaoTalk-ready reminders.
+- The current product direction is `InternMate MCP`: a student-focused intern/newcomer job discovery assistant.
+- Read `docs/prd-intern-mcp.md` before implementing product features.
+- The core value is not generic web search. It is using trusted job posting data to recommend intern/newcomer roles that university students can apply to soon.
 
 ## Development Rules
 
@@ -21,17 +21,16 @@
 - Prefer small, focused tools over one large tool.
 - Avoid adding unnecessary code, abstractions, files, comments, or dependencies.
 - When adding a new MCP tool, update the relevant schema, service, tool registration, tests, and docs together when applicable.
-- Use synthetic Korean team project chat data in tests and demos. Do not include real KakaoTalk conversations.
-- Preserve uncertainty in outputs. If owner, deadline, or decision status is unclear, mark it as unclear rather than inventing details.
-- Prefer deterministic rule-based behavior for MVP demos so the server can work without external API calls.
+- Use mock or fixture job posting data in tests. Do not call the real Saramin API in unit tests.
+- Preserve uncertainty in outputs. If deadline, eligibility, or job details are unclear, say so and link to the original posting.
+- Do not hardcode API keys. Read Saramin credentials from environment variables.
 - Do not over-engineer fallback code. Add fallback behavior only when it is necessary for the user request, the MVP demo, or reliable error handling.
 
 ## Suggested Implementation Order
 
-1. `extract_team_tasks`
-2. `summarize_team_decisions`
-3. `generate_team_reminder`
-4. `make_submission_checklist`
+1. `search_entry_jobs`
+2. `get_job_detail`
+3. `make_application_brief`
 
 ## Verification
 

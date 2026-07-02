@@ -1,98 +1,88 @@
-# Agentic Player 10 MCP
+# InternMate MCP
 
 Agentic Player 10 출품용 TypeScript MCP 서버입니다.
 
-현재 스캐폴드는 MCP 서버 실행, TypeScript 빌드, 개발 모드 실행, 테스트 실행을 위한 기본 구조를 제공합니다. MVP 도구는 `docs/` 문서를 기준으로 순차 구현합니다.
+InternMate MCP는 대학생이 자연어로 인턴/신입 공고를 찾으면 사람인 채용정보 API를 조회해 2주 이내 마감 공고를 추천순으로 정리하는 것을 목표로 합니다.
 
-## 목표
+## Goal
 
-카카오톡 팀 대화처럼 비정형으로 흩어진 프로젝트 정보를 MCP 도구로 정리합니다.
-
-- 팀원별 할 일과 마감일 추출
-- 결정 사항과 미정 사항 요약
-- 제출물 체크리스트 생성
-- 팀 채팅방에 붙여 넣을 리마인드 메시지 생성
-
-## 현재 제공 도구
-
-- `health_check`: MCP 서버가 정상 실행 중인지 확인합니다.
-
-## 프로젝트 구조
+사용자는 MCP 테스트 환경에서 다음처럼 질문합니다.
 
 ```text
-.
-├── docs/
-│   ├── demo-scenario.md
-│   ├── playmcp-submit.md
-│   ├── prd-team-project-mcp.md
-│   └── tool-spec.md
-├── src/
-│   ├── schemas/
-│   │   └── index.ts
-│   ├── services/
-│   │   └── index.ts
-│   ├── tools/
-│   │   └── index.ts
-│   └── server.ts
-├── tests/
-│   └── server.test.ts
-├── .env.example
-├── .gitignore
-├── mcp.json
-├── package.json
-└── tsconfig.json
+IT 기업 인턴 공고 찾아줘.
 ```
 
-## 요구 사항
+서버는 사람인 채용정보 API를 기반으로 인턴/신입/경력무관 공고를 검색하고, 대학생 관점에서 읽기 쉬운 추천 결과를 반환합니다.
+
+## Current Tool
+
+- `health_check`: MCP 서버 상태 확인
+
+## Planned Tools
+
+- `search_entry_jobs`: 인턴/신입 공고 검색 및 추천
+- `get_job_detail`: 특정 공고 상세 요약
+- `make_application_brief`: 지원 준비 체크리스트 생성
+
+## Project Structure
+
+```text
+src/
+  server.ts
+  tools/
+  services/
+  schemas/
+tests/
+docs/
+```
+
+## Requirements
 
 - Node.js 20 이상
 - npm
+- 사람인 채용정보 API access key
 
-## 설치
+## Install
 
 ```bash
 npm install
 ```
 
-## 개발 실행
+## Development
 
 ```bash
 npm run dev
 ```
 
-`tsx`로 `src/server.ts`를 직접 실행합니다.
-
-## 빌드
+## Build
 
 ```bash
 npm run build
 ```
 
-빌드 결과는 `dist/`에 생성됩니다.
-
-## 프로덕션 실행
+## Start
 
 ```bash
 npm start
 ```
 
-`dist/server.js`를 실행합니다. 먼저 `npm run build`를 실행해야 합니다.
-
-## 테스트
+## Test
 
 ```bash
 npm test
 ```
 
-## 타입 검사
+## Environment
 
-```bash
-npm run lint
+```text
+SARAMIN_ACCESS_KEY=
+SARAMIN_API_BASE_URL=https://oapi.saramin.co.kr
+LOG_LEVEL=info
 ```
 
-## MCP 클라이언트 설정 예시
+API key는 코드에 하드코딩하지 말고 `.env`에 설정합니다.
 
-`mcp.json`은 빌드된 서버를 실행하는 로컬 MCP 클라이언트 설정 예시입니다.
+## MCP Client Example
 
 ```json
 {
@@ -108,7 +98,7 @@ npm run lint
 }
 ```
 
-개발 중에는 클라이언트 설정을 다음처럼 바꿔 `tsx`로 직접 실행할 수도 있습니다.
+개발 중에는 다음처럼 `tsx`로 직접 실행할 수 있습니다.
 
 ```json
 {
@@ -121,30 +111,10 @@ npm run lint
 }
 ```
 
-## 환경 변수
+## Docs
 
-`.env.example`을 참고해 필요한 값만 `.env`에 설정합니다.
-
-```bash
-KAKAO_API_KEY=
-KAKAO_CLIENT_ID=
-KAKAO_CLIENT_SECRET=
-LOG_LEVEL=info
-```
-
-현재 스캐폴드 서버는 외부 API를 호출하지 않으므로 환경 변수 없이도 실행됩니다.
-
-## 구현 예정 도구
-
-- `extract_team_tasks`
-- `summarize_team_decisions`
-- `make_submission_checklist`
-- `generate_team_reminder`
-- `extract_shared_resources`
-
-## 문서
-
-- [PRD](docs/prd-team-project-mcp.md)
-- [도구 명세](docs/tool-spec.md)
-- [데모 시나리오](docs/demo-scenario.md)
-- [PlayMCP 제출 문서](docs/playmcp-submit.md)
+- [PRD](docs/prd-intern-mcp.md)
+- [MCP Architecture](docs/mcp-architecture.md)
+- [Tool Spec](docs/tool-spec.md)
+- [Demo Scenario](docs/demo-scenario.md)
+- [PlayMCP Submit](docs/playmcp-submit.md)
