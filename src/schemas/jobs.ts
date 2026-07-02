@@ -4,8 +4,8 @@ import { EmploymentTypeSchema, nonEmptyText, optionalText } from "./common.js";
 
 export const StudentProfileSchema = z.object({
   major: optionalText,
-  interests: z.array(z.string().trim().min(1)).optional(),
-  preferred_locations: z.array(z.string().trim().min(1)).optional(),
+  interests: z.array(z.string().trim()).optional(),
+  preferred_locations: z.array(z.string().trim()).optional(),
   portfolio_ready: z.boolean().optional()
 });
 
