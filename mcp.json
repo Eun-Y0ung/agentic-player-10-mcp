@@ -4,6 +4,8 @@
       "command": "node",
       "args": ["dist/server.js"],
       "env": {
+        "SARAMIN_ACCESS_KEY": "",
+        "SARAMIN_API_BASE_URL": "https://oapi.saramin.co.kr",
         "LOG_LEVEL": "info"
       }
     }

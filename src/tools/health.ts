@@ -6,6 +6,6 @@ export function handleHealthCheck(): TextContentResponse {
   return textResponse("Agentic Player 10 MCP server is running.");
 }
 
-export function registerHealthCheckTool(server: McpServer): void {
+export function registerHealthTool(server: McpServer): void {
   server.tool("health_check", "Check whether the MCP server is running.", {}, async () => handleHealthCheck());
 }
