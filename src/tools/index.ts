@@ -1,14 +1,15 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
+import { registerExtractTeamTasksTool } from "./extract-team-tasks.js";
+import { registerGenerateTeamReminderTool } from "./generate-team-reminder.js";
+import { registerHealthCheckTool } from "./health-check.js";
+import { registerMakeSubmissionChecklistTool } from "./make-submission-checklist.js";
+import { registerSummarizeTeamDecisionsTool } from "./summarize-team-decisions.js";
+
 export function registerTools(server: McpServer): void {
-  server.tool("health_check", "Check whether the MCP server is running.", {}, async () => {
-    return {
-      content: [
-        {
-          type: "text",
-          text: "Agentic Player 10 MCP server is running."
-        }
-      ]
-    };
-  });
+  registerHealthCheckTool(server);
+  registerExtractTeamTasksTool(server);
+  registerSummarizeTeamDecisionsTool(server);
+  registerGenerateTeamReminderTool(server);
+  registerMakeSubmissionChecklistTool(server);
 }
