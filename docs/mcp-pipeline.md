@@ -16,6 +16,161 @@ VS Code 확장      = 코드 편집, tool schema 작성, 파일 단위 리뷰
 Codex CLI         = 서버 구현, 실행, 테스트, 디버깅, 배포 점검
 ```
 
+---
+
+## InternMate MCP 추가 체크포인트
+
+현재 프로젝트는 TeamTok/팀플 MCP가 아니라 `InternMate MCP` 기준으로 검증한다.
+
+### 1. 문서 기준 확인
+
+- [ ] PRD 기준 문서는 `docs/prd-intern-mcp.md`다.
+- [ ] tool 기준 문서는 `docs/tool-spec.md`다.
+- [ ] 구조 기준 문서는 `docs/mcp-architecture.md`다.
+- [ ] 데모 기준 문서는 `docs/demo-scenario.md`다.
+- [ ] 제출 설명 기준 문서는 `docs/playmcp-submit.md`다.
+- [ ] 위 문서들이 모두 `InternMate MCP` 방향을 가리킨다.
+- [ ] TeamTok/팀플 관련 설명이 주요 문서에 남아 있지 않다.
+
+### 2. MCP tool 목록 확인
+
+노출되어야 하는 tool:
+
+- [ ] `health_check`
+- [ ] `search_entry_jobs`
+- [ ] `get_job_detail`
+- [ ] `make_application_brief`
+
+남아 있으면 안 되는 이전 tool:
+
+- [ ] `extract_team_tasks` 없음
+- [ ] `summarize_team_decisions` 없음
+- [ ] `generate_team_reminder` 없음
+- [ ] `make_submission_checklist` 없음
+
+확인 명령:
+
+```bash
+rg "extract_team_tasks|summarize_team_decisions|generate_team_reminder|make_submission_checklist|TeamTok|team-project" .
+```
+
+검색 결과가 없어야 한다.
+
+### 3. 사람인 API 환경 변수 확인
+
+- [ ] API key는 코드에 하드코딩하지 않는다.
+- [ ] `process.env.SARAMIN_ACCESS_KEY`에서 API key를 읽는다.
+- [ ] `process.env.SARAMIN_API_BASE_URL`이 있으면 사용한다.
+- [ ] base URL이 없으면 `https://oapi.saramin.co.kr`를 기본값으로 사용한다.
+- [ ] `.env.example`, `README.md`, `mcp.json`의 환경 변수 예시가 서로 맞는다.
+
+필수 환경 변수:
+
+```text
+SARAMIN_ACCESS_KEY=
+SARAMIN_API_BASE_URL=https://oapi.saramin.co.kr
+```
+
+### 4. `search_entry_jobs` 검증
+
+- [ ] `keywords`가 없으면 `찾고 싶은 직무나 키워드를 입력해 주세요.`를 반환한다.
+- [ ] `deadline_within_days` 기본값은 14다.
+- [ ] `limit` 기본값은 5다.
+- [ ] 인턴/신입/경력무관 공고가 추천 점수를 더 받는다.
+- [ ] 14일 안에 마감되는 공고를 우선한다.
+- [ ] 지역 조건이 있으면 추천 사유에 반영된다.
+- [ ] 응답에는 회사명, 공고명, 마감, 지역, 경력, 고용형태, 추천 이유, 링크가 포함된다.
+- [ ] 빈 결과일 때 조건 완화 제안 메시지를 반환한다.
+- [ ] API key가 없으면 `사람인 API 키가 설정되지 않았습니다.`를 반환한다.
+- [ ] API 실패 시 안전한 한국어 메시지를 반환한다.
+
+### 5. `get_job_detail` 검증
+
+- [ ] `job_id` 또는 `job_url` 중 하나가 필요하다.
+- [ ] 둘 다 없으면 `상세 조회할 공고 ID 또는 URL이 필요합니다.`를 반환한다.
+- [ ] 상세 응답에는 공고 원문 링크가 포함된다.
+- [ ] 마감, 지역, 경력, 학력, 고용형태를 요약한다.
+- [ ] 불확실한 조건은 확정적으로 말하지 않고 원문 확인을 안내한다.
+- [ ] 공고를 찾지 못하면 마감/URL 변경 가능성을 안내한다.
+- [ ] `include_application_brief`가 true면 지원 준비 체크리스트를 함께 반환한다.
+
+### 6. `make_application_brief` 검증
+
+- [ ] `job`이 없으면 `체크리스트를 만들 공고 정보가 필요합니다.`를 반환한다.
+- [ ] `job.title`이 없으면 `공고명이 필요합니다.`를 반환한다.
+- [ ] 이력서, 자기소개서, 프로젝트 경험, 포트폴리오/GitHub, 마감 전 제출 항목을 포함한다.
+- [ ] 공고 요구사항에 Java/Spring/backend가 있으면 관련 프로젝트 정리 항목을 보강한다.
+- [ ] 공고 요구사항에 data/SQL/Python이 있으면 데이터 경험 정리 항목을 보강한다.
+- [ ] 합격 가능성 예측을 하지 않는다는 안내를 포함한다.
+
+### 7. 테스트 기준
+
+- [ ] unit test에서 실제 사람인 API를 호출하지 않는다.
+- [ ] `tests/fixtures/saramin-jobs.ts` 같은 fixture/mock client를 사용한다.
+- [ ] `npm run build`가 통과한다.
+- [ ] `npm test`가 통과한다.
+- [ ] API key 누락 테스트가 있다.
+- [ ] 빈 검색 결과 테스트가 있다.
+- [ ] 공고 상세 not found 테스트가 있다.
+- [ ] tool handler 응답이 항상 MCP `content` 배열 형태인지 확인한다.
+
+검증 명령:
+
+```bash
+npm run build
+npm test
+```
+
+PowerShell 실행 정책 때문에 `npm`이 막히면 Windows에서는 다음 명령을 사용한다.
+
+```bash
+npm.cmd run build
+npm.cmd test
+```
+
+### 8. MCP Inspector 수동 확인
+
+개발 실행:
+
+```bash
+npx @modelcontextprotocol/inspector npx tsx src/server.ts
+```
+
+빌드 후 실행:
+
+```bash
+npm run build
+npx @modelcontextprotocol/inspector node dist/server.js
+```
+
+확인할 것:
+
+- [ ] tool 목록에 InternMate tool 4개가 보인다.
+- [ ] 각 tool description이 현재 기획과 맞다.
+- [ ] input schema가 과하게 복잡하지 않다.
+- [ ] 정상 입력 호출이 성공한다.
+- [ ] 잘못된 입력 호출이 안전한 한국어 메시지를 반환한다.
+- [ ] 응답이 카카오톡에서 읽기 좋은 길이와 bullet 형태다.
+
+### 9. 보안/비목표 확인
+
+- [ ] API key가 README, docs, tests, source에 실제 값으로 들어가지 않는다.
+- [ ] 사용자 개인정보를 저장하지 않는다.
+- [ ] 실제 지원 제출 기능을 구현하지 않는다.
+- [ ] 합격 가능성 예측을 하지 않는다.
+- [ ] 공고 조건은 원문 최종 확인을 안내한다.
+- [ ] 로그나 응답에 민감정보가 노출되지 않는다.
+
+### 10. 최종 판단 기준
+
+아래 세 질문에 모두 "예"라고 답할 수 있으면 MVP 기준 통과로 본다.
+
+```text
+1. 사용자가 "IT 기업 인턴 공고 찾아줘"라고 했을 때 search_entry_jobs가 자연스럽게 동작하는가?
+2. 사용자가 "1번 공고 자세히 알려줘"라고 했을 때 get_job_detail이 원문 링크와 함께 요약하는가?
+3. API key가 없거나 결과가 없거나 입력이 잘못되어도 서버가 죽지 않고 안전한 메시지를 반환하는가?
+```
+
 핵심 운영 원칙은 다음과 같습니다.
 
 ```text
